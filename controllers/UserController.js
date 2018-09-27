@@ -1,29 +1,26 @@
 
 const mongoose = require('../config/db');
+const app = require('../config/config');
 const User = require('../models/User');
-module.exports =  {
- findUsers:async(req, res) => {
-        try{   
-            User.find((err, users)=> {
-                if(err) {
-                    return err;
-                }
-                res.send(users);
-            })
-        } catch(e) {
-            return Error('Error');
-        }
-},
-createUser:async (req, res) => {
-            try{
-             const name = req.body.name;
-             const subName = req.body.subName;
-             const email = req.body.email;
-             const password = req.body.password;
-          const user = User.create( {name,subName, email, password });
+
+    app.post('/api/users', (req, res) =>  {
+        try{
+            const user =  User.create({name:req.body.name,subName:req.body.subName, email:req.body.email, password:req.body.password, type:req.body.type});
             res.send(user).status(201);
-         } catch (err) {
-             return new Error(err);
-         }
+        } catch (err) {
+            return new Error(err);
         }
-}
+    });
+    app.get('/api/users', (req, res) =>  { 
+           try{   
+               User.find((err, users)=> {
+                   if(err) {
+                       return err;
+                   }
+                   res.send(users);
+               })
+           } catch(e) {
+               return Error('Error');
+           }
+    });
+module.exports = app;
